@@ -6,6 +6,14 @@
 #pragma link C++ class vector<HGCSSSimHit>+;
 #pragma link C++ class HGCSSGenParticle+;
 #pragma link C++ class vector<HGCSSGenParticle>+;
+
+
+#pragma link C++ class HGCSSFirstHadInt+;
+#pragma link C++ class vector<HGCSSFirstHadInt>+;
+
+#pragma link C++ class HGCSSpi0Info+;
+#pragma link C++ class vector<HGCSSpi0Info>+;
+
 #pragma link C++ class HGCSSRecoHit+;
 #pragma link C++ class vector<HGCSSRecoHit>+;
 #pragma link C++ class HGCSSRecoJet+;

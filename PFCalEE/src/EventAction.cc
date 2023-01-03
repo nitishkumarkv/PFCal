@@ -61,6 +61,8 @@ EventAction::EventAction()
   tree_->Branch("HGCSSSimHitVec","std::vector<HGCSSSimHit>",&hitvec_);
   tree_->Branch("HGCSSAluSimHitVec","std::vector<HGCSSSimHit>",&alhitvec_);
   tree_->Branch("HGCSSGenParticleVec","std::vector<HGCSSGenParticle>",&genvec_);
+  tree_->Branch("HGCSSFirstHadIntVec","std::vector<HGCSSFirstHadInt>",&fisrtHadvec_);
+  tree_->Branch("HGCSSpi0InfoVec","std::vector<HGCSSpi0Info>",&pi0Infovec_);
 
   //fout_.open("ProcessDepAbove5MeV.dat");
   //if (!fout_.is_open()){
@@ -100,6 +102,23 @@ void EventAction::Detect(G4double edep, G4double stepl,G4double globalTime,
   for(size_t i=0; i<detector_->size(); i++) (*detector_)[i].add(edep,stepl,globalTime,pdgId,volume,position,trackID,parentID,i);
   if (genPart.isIncoming()) genvec_.push_back(genPart);
 }
+
+////////////////////////////b//////////////////
+
+void EventAction::InfoSec(const HGCSSFirstHadInt & firstHadInt)
+{
+  fisrtHadvec_.push_back(firstHadInt);
+}
+
+void EventAction::Infopi0(const HGCSSpi0Info & pi0Info)
+{
+  pi0Infovec_.push_back(pi0Info);
+}
+
+///////////////////////////////e//////////////
+
+
+
 
 bool EventAction::isFirstVolume(const std::string volname) const{
   if (detector_->size()>0 && (*detector_)[0].n_elements>0){
@@ -219,6 +238,8 @@ void EventAction::EndOfEventAction(const G4Event* g4evt)
   tree_->Fill();
 
   //reset vectors
+  fisrtHadvec_.clear();
+  pi0Infovec_.clear();
   genvec_.clear();
   hitvec_.clear();
   alhitvec_.clear();

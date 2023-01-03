@@ -1,0 +1,10 @@
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/N03/det/setField 0.0 T
+/N03/det/setModel 2
+/random/setSeeds 9679 12675
+/generator/select particleGun
+/gun/particle pi-
+/gun/energy 300.000001 GeV
+/run/beamOn 100

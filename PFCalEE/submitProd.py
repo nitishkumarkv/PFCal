@@ -24,11 +24,10 @@ parser.add_argument('-n', '--nevts'       , dest='nevts'      , type=int,   help
 parser.add_argument('-o', '--out'         , dest='out'        ,             help='output directory'             , default=os.getcwd() )
 parser.add_argument('-e', '--eosOut'      , dest='eos'        ,             help='eos path to save root file to EOS',         default='')
 parser.add_argument('-g', '--gun'         , dest='dogun'      ,             help='use particle gun.', action="store_true")
-parser.add_argument(      '--enList'      , dest='enList'     , type=int,   help='E_T list to use with gun', nargs='+', default=[5,10,20,30,40,60,80,100,150,200])
+parser.add_argument(      '--enList'      , dest='enList'     , type=float,   help='E_T list to use with gun', nargs='+', default=[5,10,20,30,40,60,80,100,150,200])
 parser.add_argument('-S', '--no-submit'   , dest='nosubmit'   ,             help='Do not submit batch job.', action="store_true")
 opt, _ = parser.parse_known_args()
 
-print(opt)
 
 ###################################################################################################
 ###################################################################################################
@@ -115,7 +114,7 @@ class SubmitProd(SubmitBase):
             s.write('ls -ltrh * >> {}\n'.format(logfile))
             if len(self.p.eos)>0:
                 s.write('eos mkdir -p {}\n'.format(self.eosDirOut))
-                s.write('eos cp HGcal_{}.root {}/HGcal_{}.root\n'.format(outTag,self.eosDirOut,outTag))
+                s.write('cp HGcal_{}.root {}/HGcal_{}.root\n'.format(outTag,self.eosDirOut,outTag))##for saving in eos 'cp HGcal_{}.root..' instead of 'eos cp HGcal_{}.root.....'
                 s.write('if (( "$?" != "0" )); then\n')
                 s.write('echo " --- Problem with copy of file PFcal.root to EOS. Keeping locally." >> {}\n'.format(logfile))
                 s.write('else\n')
@@ -171,10 +170,9 @@ class SubmitProd(SubmitBase):
                             s.write('/gun/particle {} \n'.format(self.p.datatype))
                             en = et*math.cosh(eta) if eta<5 else et
                             s.write('/gun/energy {n:.{r}f} GeV\n'.format(n=en, r=6))
-                            if self.p.model != 2 and eta<5:
+                            if self.p.model != 2:
                                 alpha = 2*math.atan(math.exp(-1.*eta));
                                 s.write('/gun/direction {} {} {}\n'.format(math.cos(math.pi*self.p.phi)*math.sin(alpha),math.sin(math.pi*self.p.phi)*math.sin(alpha),math.cos(alpha)))
-                            
                         else :
                             s.write('/generator/select hepmcAscii\n')
                             s.write('/generator/hepmcAscii/open {}\n'.format(self.p.datafile))
@@ -202,6 +200,7 @@ class SubmitProd(SubmitBase):
             s.write('Output = {}/{}\n'.format(self.outDir,out_name))
             s.write('Error = {}/{}\n'.format(self.outDir,err_name))
             s.write('Log = {}/{}\n'.format(self.outDir,log_name))
+            #s.write('output_destination = root://eoscms.cern.ch//eos/user/n/nkasarag/Simulation_Full_HGCAL/gitV08-08-00-v3/pi-/')
             s.write('RequestMemory = 2GB\n')
             s.write('+JobFlavour = "testmatch"\n')
             s.write('JobBatchName = prod_' + self.p.gittag + '_' + str(self.p.version) + '_' + self.p.datatype + '\n')
@@ -223,8 +222,10 @@ bval = 'BON' if opt.Bfield>0 else 'BOFF'
 lab = '200u'
 odir = '{}/git{}/version_{}/model_{}/{}/{}/{}'.format(opt.out,opt.gittag,opt.version,opt.model,opt.datatype,bval,lab)
 if opt.phi != 0.5: odir='{out}/phi_{n:.{r}f}pi'.format(out=odir,n=opt.phi,r=3)
-eos_partial = opt.eos[1:] if os.path.isabs(opt.eos) else opt.eos
-edir = os.path.join('/eos', 'cms', eos_partial, 'git' + opt.gittag, opt.datatype)
+eos_partial = opt.eos[0:] if os.path.isabs(opt.eos) else opt.eos
+#edir = os.path.join('/eos', 'cms', eos_partial, 'git' + opt.gittag, opt.datatype)
+edir = os.path.join( eos_partial, 'git' + opt.gittag, opt.datatype)
+print(edir)
 
 subprod = SubmitProd(outDir=odir, eosDirOut=edir, bfield=bval, params=opt)
 subprod.write_shell_script_file()

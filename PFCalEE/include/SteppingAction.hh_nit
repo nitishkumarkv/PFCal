@@ -1,0 +1,54 @@
+#ifndef SteppingAction_h
+#define SteppingAction_h 1
+
+#include "G4UserSteppingAction.hh"
+#include "G4EmSaturation.hh"
+
+#include "TFile.h"
+#include "TTree.h"
+
+
+class EventAction;
+
+class SteppingAction : public G4UserSteppingAction
+{
+public:
+  SteppingAction();
+  virtual ~SteppingAction();
+
+  void UserSteppingAction(const G4Step*);
+
+
+private:
+  EventAction *eventAction_;  
+  //to correct the energy in the scintillator
+  G4EmSaturation* saturationEngine;
+  G4double timeLimit_;
+
+
+//////////////////////////////b////////////////////////////////////////
+//  TTree * bookTree(std::string);
+//  void endTree();
+//  void clear_vars();
+//  void init();
+//
+//  unsigned int count_;
+//
+//
+//  bool foundHadInt;
+//  int nsec;
+//  int process;
+//  std::vector<double> sec_pdgID;
+//  std::vector<double> sec_charge;
+//  std::vector<double> sec_kin;
+//  std::vector<double> sec_x;
+//  std::vector<double> sec_y;
+//  std::vector<double> sec_z;
+//  UInt_t event_;
+//  TFile *file;
+//  TTree *tree;       
+/////////////////////////////////e//////////////////////////////////////////
+};
+
+
+#endif

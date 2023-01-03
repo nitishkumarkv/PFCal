@@ -3,10 +3,16 @@
 #include "DetectorConstruction.hh"
 #include "EventAction.hh"
 
+#include "G4ProcessTypeEnumerator.h" 
+
 #include "G4Step.hh"
 #include "G4RunManager.hh"
 
 #include "HGCSSGenParticle.hh"
+
+#include "HGCSSFirstHadInt.hh"
+#include "HGCSSpi0Info.hh"
+#include "G4SystemOfUnits.hh"
 
 //
 SteppingAction::SteppingAction()                                         
@@ -24,6 +30,93 @@ SteppingAction::~SteppingAction()
 //
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
+
+////////////////////////////////////////b///////////////////////////
+
+    HGCSSFirstHadInt firstHadInt;
+    HGCSSpi0Info pi0Info;   
+
+    int nSec = 0;   
+    bool foundHadInt = false;
+    //double x = -999999.0;
+    //double y = -999999.0;
+    //double z = -999999.0;
+
+    const G4TrackVector* tkV  = aStep->GetSecondary();
+    G4Track* thTk = aStep->GetTrack();
+    const G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+    if (tkV != nullptr && postStepPoint != nullptr) {
+      int nsc = (*tkV).size();
+      const G4VProcess*  proc = postStepPoint->GetProcessDefinedStep();
+      G4ProcessTypeEnumerator* typeEnumerator = new G4ProcessTypeEnumerator();
+
+      if (proc != nullptr) {
+        int procid = typeEnumerator->processIdLong(proc);
+        std::string name = proc->GetProcessName();
+
+        if(thTk->GetParentID() <= 0 && procid >= 121 && procid <= 151) {
+          foundHadInt = true;
+          int process = procid;
+
+          firstHadInt.x(postStepPoint->GetPosition().getX()/cm);
+          firstHadInt.y(postStepPoint->GetPosition().getY()/cm);
+          firstHadInt.z(postStepPoint->GetPosition().getZ()/cm);
+
+
+          firstHadInt.foundHadInt(foundHadInt);
+          firstHadInt.process(process);
+
+          firstHadInt.parent_id(thTk->GetParentID());
+          firstHadInt.track_id(thTk->GetTrackID());
+
+          for(int i = 0; i < nsc; i++) {
+            G4Track *tk = (*tkV)[i];
+            if(tk->GetCreatorProcess()->GetProcessName() == "hIoni") continue;
+            nSec++;
+            
+            firstHadInt.nsec(nSec);
+            firstHadInt.sec_pdgID(tk->GetDefinition()->GetPDGEncoding());
+            firstHadInt.sec_charge(tk->GetDefinition()->GetPDGCharge());
+            firstHadInt.sec_kin(tk->GetKineticEnergy()/GeV);
+
+            eventAction_->InfoSec(firstHadInt);
+          }
+        }
+
+
+
+          for(int i = 0; i < nsc; i++) {
+            G4Track *tk = (*tkV)[i];
+ 
+            if(tk->GetDefinition()->GetPDGEncoding() == 111   //pi0
+               || tk->GetDefinition()->GetPDGEncoding() == 221){   //eta
+
+               if(tk->GetCreatorProcess()->GetProcessName() == "hIoni") continue;
+
+               pi0Info.particle_pdgID(tk->GetDefinition()->GetPDGEncoding());
+               pi0Info.particle_charge(tk->GetDefinition()->GetPDGCharge());
+               pi0Info.particle_kin(tk->GetKineticEnergy()/GeV);
+
+               pi0Info.x(postStepPoint->GetPosition().getX()/cm);
+               pi0Info.y(postStepPoint->GetPosition().getY()/cm);
+               pi0Info.z(postStepPoint->GetPosition().getZ()/cm);
+  
+               pi0Info.process(procid);
+  
+               pi0Info.parent_id(thTk->GetParentID());
+               pi0Info.track_id(thTk->GetTrackID());
+  
+               eventAction_->Infopi0(pi0Info);
+            }
+          }
+        
+
+      }
+    }
+ 
+//////////////////////////////e////////////////////////////////////////////////
+
+
   // get PreStepPoint
   const G4StepPoint *thePreStepPoint = aStep->GetPreStepPoint();
   const G4StepPoint *thePostStepPoint = aStep->GetPostStepPoint();

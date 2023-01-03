@@ -1,0 +1,15 @@
+universe = vanilla
+Executable = /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/runDigiJob.sh
+Arguments = --energy $(ENERGY) --eta $(ETA) --run $(Step) --ic $(IC) --npuvtx $(NPUVTX) 
+Requirements = (OpSysAndVer =?= "CentOS7")
+Output = /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/digi_npuvtx$(NPUVTX)_ic$(IC)_en$(ENERGY)_eta$(ETA)_run$(Step).out
+Error = /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/digi_npuvtx$(NPUVTX)_ic$(IC)_en$(ENERGY)_eta$(ETA)_run$(Step).err
+Log = /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/digi_npuvtx$(NPUVTX)_ic$(IC)_en$(ENERGY)_eta$(ETA)_run$(Step).log
+RequestMemory = 150MB
++JobFlavour = "longlunch"
+JobBatchName = digi_V08-08-00-v3_73_pi-
+Queue 100 NPUVTX, IC, ENERGY, ETA from (
+0, 3, 5.31604, 2.0
+0, 3, 26.580223, 2.0
+0, 3, 79.740669, 2.0
+)

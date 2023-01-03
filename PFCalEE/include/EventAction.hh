@@ -18,6 +18,9 @@
 #include "HGCSSGenParticle.hh"
 #include "HGCSSGeometryConversion.hh"
 
+#include "HGCSSFirstHadInt.hh"
+#include "HGCSSpi0Info.hh"
+
 #include <vector>
 #include <map>
 #include "fstream"
@@ -37,6 +40,13 @@ public:
 	      G4VPhysicalVolume *volume, const G4ThreeVector & position,
 	      G4int trackID, G4int parentID,
 	      const HGCSSGenParticle & genPart);
+
+
+/////////////////////b/////////////////////
+  void InfoSec(const HGCSSFirstHadInt & firstHadInt);
+  void Infopi0(const HGCSSpi0Info & pi0Info);
+/////////////////////e/////////////////////
+
 
   //void Detect(G4double edep, G4double stepl,G4double globalTime, G4int pdgId, G4VPhysicalVolume *volume,int iyiz);
 
@@ -62,6 +72,10 @@ private:
   HGCSSSimHitVec hitvec_;
   HGCSSSimHitVec alhitvec_;
   HGCSSGenParticleVec genvec_;
+
+  HGCSSFirstHadIntVec fisrtHadvec_;
+  HGCSSpi0InfoVec pi0Infovec_;
+
   EventActionMessenger*  eventMessenger;
   //std::ofstream fout_;
   unsigned shape_;

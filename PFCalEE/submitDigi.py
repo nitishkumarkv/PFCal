@@ -26,7 +26,7 @@ parser.add_argument('-E', '--eosIn'    , dest='eosin'     , help='eos path to re
 parser.add_argument('-g', '--gun'      , dest='dogun'     , help='use particle gun.', action='store_true')
 parser.add_argument('-S', '--no-submit', dest='nosubmit'  , help='Do not submit batch job.', action='store_true')
 parser.add_argument('--dontoverwrite',   dest='dontoverwrite', help='Don\'t overwrite possible existing production', action='store_true')
-parser.add_argument('--enList'         , dest='enList'    , type=int, help='E_T list to use with gun', nargs='+', default=[5,10,20,30,40,60,80,100,150,200])
+parser.add_argument('--enList'         , dest='enList'    , type=float, help='E_T list to use with gun', nargs='+', default=[5,10,20,30,40,60,80,100,150,200])
 parser.add_argument('--interCalib'     , dest='iCalibList', type=int, help='inter calibration list in percentage', nargs='+', default=[3]) #0,1,2,3,4,5,10,15,20,50]
 parser.add_argument('--etamean'        , dest='etamean'   , help='mean value of eta ring to save', default=0,  type=float)
 parser.add_argument('--deta'           , dest='deta'      , help='width of eta ring', default=0, type=float)
@@ -130,7 +130,7 @@ class SubmitDigi(SubmitBase):
             s.write('ls *\n')
             if len(self.p.eosout)>0:
                 s.write('eos mkdir -p {}\n'.format(self.eosDirOut))
-                s.write('eos cp $localdir/DigiPFcal.root {}/Digi_{}{}.root\n'.format(self.eosDirOut,self.label,outTag))
+                s.write('cp $localdir/DigiPFcal.root {}/Digi_{}{}.root\n'.format(self.eosDirOut,self.label,outTag))###for savig in eosuser 'cp $localdir/DigiPFcal.root..' instead of 'eos cp $localdir/DigiPFcal.root'
                 s.write('if (( "$?" != "0" )); then\n')
                 s.write('echo " --- Problem with copy of file DigiPFcal.root to EOS. Keeping locally."\n')
                 s.write('else\n')
@@ -238,17 +238,20 @@ class SubmitDigi(SubmitBase):
 ###################################################################################################
 ###################################################################################################
 bval = 'BON' if opt.Bfield>0 else 'BOFF'
-nSiLayers = 3
-lab = '{}00u'.format(nSiLayers)
+lab = '200u'
 odir = '{}/git{}/version_{}/model_{}/{}/{}/{}'.format(opt.out,opt.gittag,opt.version,opt.model,opt.datatype,bval,lab)
-edirout = '/eos/cms{}/git{}/{}'.format(opt.eosout,opt.gittag,opt.datatype)
-edirin = 'root://eoscms//eos/cms{}/git{}/{}'.format(opt.eosin,opt.gittag,opt.datatype) if opt.eosin != '' else edirout
+#edirout = '/eos/cms{}/git{}/{}'.format(opt.eosout,opt.gittag,opt.datatype)
+edirout = '{}/git{}/{}'.format(opt.eosout,opt.gittag,opt.datatype)
+print(edirout)
+#edirin = 'root://eoscms//eos/cms{}/git{}/{}'.format(opt.eosin,opt.gittag,opt.datatype) if opt.eosin != '' else edirout
+edirin = 'root://eosuser//{}/git{}/{}'.format(opt.eosin,opt.gittag,opt.datatype) if opt.eosin != '' else edirout
+print(edirin)
+nSiLayers = 2
 
 nmult = ('0-27:0.27', '0-27:0.13', '0-27:0.07', '0-27:0.13')
 n63 = ('0-51:0.27,53-68:0.15', '0-51:0.13,53-68:0.15', '0-51:0.07,53-68:0.15', '0-51:0.13,53-68:0.15')
 n70 = ('0-25:0.27', '0-25:0.13', '0-25:0.07', '0-25:0.13')
 n73 = ('0-46:0.27,48-61:0.15', '0-46:0.13,48-61:0.15', '0-46:0.07,48-61:0.15', '0-46:0.13,48-61:0.15')
-tb2022 = ('0-1:0.15','0-1:0.15','0-1:0.15','0-1:0.15')
 def get_noise(noise, l):
     if l=='100u':   return noise[0]
     elif l=='200u': return noise[1]
@@ -305,11 +308,7 @@ vdict = {8:   dict(puFile='root://eoscms//eos/cms/store/cmst3/group/hgcal/Standa
          83:  dict(puFile=pudflt, granularity='0-61:1', threshold='0-61:5', noise=get_noise(n73,lab)),
          100: dict(puFile=pudflt, granularity='0-27:4', noise='0-27:0.14', threshold='0-27:5'),
          110: dict(puFile=pudflt, granularity='0-27:4', noise='0-27:0.14', threshold='0-27:5'),
-         120: dict(puFile=pudflt, granularity='0-1:1',  threshold='0-1:5', noise=get_noise(tb2022,lab)),
 }
-
-for i in range(121,140):
-    vdict[i]=vdict[120].copy()
 
 gran = vdict[opt.version]['granularity']
 thr  = vdict[opt.version]['threshold']
