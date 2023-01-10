@@ -3,7 +3,7 @@
 /tracking/verbose 0
 /N03/det/setField 0.0 T
 /N03/det/setModel 2
-/random/setSeeds 9679 12675
+/random/setSeeds 48987 60677
 /generator/select particleGun
 /gun/particle pi-
 /gun/energy 300.000001 GeV
