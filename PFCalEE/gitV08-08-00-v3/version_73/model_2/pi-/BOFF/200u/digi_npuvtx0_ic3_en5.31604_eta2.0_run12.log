@@ -1,2 +1,12 @@
-000 (7759729.012.000) 01/10 11:13:24 Job submitted from host: <188.184.90.62:9618?addrs=188.184.90.62-9618+[2001-1458-201-e4--100-238]-9618&alias=bigbird16.cern.ch&noUDP&sock=schedd_8098_2206>
+040 (7759729.012.000) 01/10 11:46:53 Started transferring input files
+	Transferring to host: <128.142.57.142:9618?addrs=128.142.57.142-9618+[2001-1458-301-7--100-8d]-9618&alias=b7s02p9100.cern.ch&noUDP&sock=slot1_16_8977_dbc6_177>
+...
+007 (7759729.012.000) 01/10 11:46:53 Shadow exception!
+	Error from slot1_16@b7s02p9100.cern.ch: SHADOW at 188.184.90.62 failed to send file(s) to <128.142.57.142:34606>: error reading from /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/runDigiJob.sh: (errno 2) No such file or directory; STARTER failed to receive file(s) from <188.184.90.62:9618>
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+...
+012 (7759729.012.000) 01/10 11:46:53 Job was held.
+	Error from slot1_16@b7s02p9100.cern.ch: SHADOW at 188.184.90.62 failed to send file(s) to <128.142.57.142:34606>: error reading from /afs/cern.ch/user/n/nkasarag/PFCal/PFCalEE/gitV08-08-00-v3/version_73/model_2/pi-/BOFF/200u/runDigiJob.sh: (errno 2) No such file or directory; STARTER failed to receive file(s) from <188.184.90.62:9618>
+	Code 13 Subcode 2
 ...

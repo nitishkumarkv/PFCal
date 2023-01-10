@@ -42,7 +42,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     //double y = -999999.0;
     //double z = -999999.0;
 
-    //const G4TrackVector* tkV  = aStep->GetSecondary();
+    const G4TrackVector* tkV  = aStep->GetSecondary();
     //const G4Track* tkV  = aStep->GetSecondaryInCurrentStep();
 
     G4Track* thTk = aStep->GetTrack();
