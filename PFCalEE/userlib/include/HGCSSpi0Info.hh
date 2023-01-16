@@ -12,13 +12,13 @@
 #include "TMath.h"
 
 
-
 class HGCSSpi0Info{
 
 
 public:
   HGCSSpi0Info():
     process_(0),
+    creator_process_(""),
     x_(0),
     y_(0),
     z_(0),
@@ -38,6 +38,10 @@ public:
 
   inline int process() const {
       return process_;
+    };
+
+  inline std::string creator_process() const {
+      return creator_process_;
     };
 
   inline double x() const {
@@ -79,6 +83,10 @@ public:
       process_ = val;
     };
 
+  inline void creator_process(const std::string & val){
+      creator_process_ = val;
+    };
+
   inline void x(const double & val){
       x_ = val;
     };
@@ -118,6 +126,7 @@ public:
 private:
 
   int process_;
+  std::string creator_process_;
   double x_;
   double y_;
   double z_;
