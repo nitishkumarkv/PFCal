@@ -93,22 +93,26 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
             if(tk->GetDefinition()->GetPDGEncoding() == 111   //pi0
                || tk->GetDefinition()->GetPDGEncoding() == 221){   //eta
 
-               if(tk->GetCreatorProcess()->GetProcessName() == "hIoni") continue;
+            //   if(procid >= 121 && procid <= 151) {
 
-               pi0Info.particle_pdgID(tk->GetDefinition()->GetPDGEncoding());
-               pi0Info.particle_charge(tk->GetDefinition()->GetPDGCharge());
-               pi0Info.particle_kin(tk->GetKineticEnergy()/GeV);
+            //     if(tk->GetCreatorProcess()->GetProcessName() == "hIoni") continue;
 
-               pi0Info.x(postStepPoint->GetPosition().getX()/cm);
-               pi0Info.y(postStepPoint->GetPosition().getY()/cm);
-               pi0Info.z(postStepPoint->GetPosition().getZ()/cm);
+                 pi0Info.particle_pdgID(tk->GetDefinition()->GetPDGEncoding());
+                 pi0Info.particle_charge(tk->GetDefinition()->GetPDGCharge());
+                 pi0Info.particle_kin(tk->GetKineticEnergy()/GeV);
+
+                 pi0Info.x(postStepPoint->GetPosition().getX()/cm);
+                 pi0Info.y(postStepPoint->GetPosition().getY()/cm);
+                 pi0Info.z(postStepPoint->GetPosition().getZ()/cm);
   
-               pi0Info.process(procid);
+                 pi0Info.process(procid);
+                 pi0Info.creator_process(tk->GetCreatorProcess()->GetProcessName());
   
-               pi0Info.parent_id(thTk->GetParentID());
-               pi0Info.track_id(thTk->GetTrackID());
+                 pi0Info.parent_id(thTk->GetParentID());
+                 pi0Info.track_id(thTk->GetTrackID());
   
-               eventAction_->Infopi0(pi0Info);
+                 eventAction_->Infopi0(pi0Info);
+             //  }
             }
           }
         
